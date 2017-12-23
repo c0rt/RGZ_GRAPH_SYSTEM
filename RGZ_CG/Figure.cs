@@ -140,7 +140,7 @@ namespace RGZ_CG
                 Gl.glClear(Gl.GL_COLOR_BUFFER_BIT | Gl.GL_DEPTH_BUFFER_BIT);
                 Gl.glClearColor(255.0f, 255.0f, 255.0f, 1.0f);
                 Gl.glLoadIdentity();
-                
+
                 if (!ortho)
                 {
                     Glu.gluLookAt(0.0f, 0.0f, 8.0f,
@@ -192,31 +192,31 @@ namespace RGZ_CG
                             Gl.glEnd();
                         }
                     //////////////////////////////////////////////////////////////////
-                    //if (faces[0].normales.Count > 0 || faces[0].textures.Count > 0)
+
+                    Gl.glEnable(Gl.GL_LIGHTING);
+
+                    Gl.glColor3f(255, 0, 0);
+
+                    foreach (Face f in faces)
                     {
-                        //if (faces[0].normales.Count > 0)
-                            Gl.glEnable(Gl.GL_LIGHTING);
-
-                        Gl.glColor3f(255, 0, 0);
-
-                        foreach (Face f in faces)
+                        switch (f.points.Count)
                         {
-                            switch (f.points.Count)
-                            {
-                                case 3:
-                                    Gl.glBegin(Gl.GL_TRIANGLES);
-                                    break;
-                                case 4:
-                                    Gl.glBegin(Gl.GL_QUADS);
-                                    break;
-                                default:
-                                    Gl.glBegin(Gl.GL_POLYGON);
-                                    break;
-                            }
-                            //////////////////////////////////////////////////////////////////
+                            case 3:
+                                Gl.glBegin(Gl.GL_TRIANGLES);
+                                break;
+                            case 4:
+                                Gl.glBegin(Gl.GL_QUADS);
+                                break;
+                            default:
+                                Gl.glBegin(Gl.GL_POLYGON);
+                                break;
+                        }
+                        //////////////////////////////////////////////////////////////////
+                        for (int j = 0; f.points.Count > j; j++)
+                        {
                             if (f.normales.Count == f.points.Count)
                             {
-                                Gl.glNormal3d(normales[f.normales[0] - 1].X, normales[f.normales[0] - 1].Y, normales[f.normales[0] - 1].Z);
+                                Gl.glNormal3d(normales[f.normales[j] - 1].X, normales[f.normales[j] - 1].Y, normales[f.normales[j] - 1].Z);
                             }
                             else
                             {
@@ -233,18 +233,17 @@ namespace RGZ_CG
                                 Gl.glNormal3d(n.Z, n.Y, n.Z);
                             }
                             //////////////////////////////////////////////////////////////////
-                            for (int j = 0; f.points.Count > j; j++)
-                            {
-                                if (f.textures.Count > 0)
-                                    Gl.glTexCoord2f(textures[f.textures[j] - 1].X, textures[f.textures[j] - 1].Y);
-                                Gl.glVertex3d(points[f.points[j] - 1].X, points[f.points[j] - 1].Y, points[f.points[j] - 1].Z);
-                            }
-                            Gl.glEnd();
+
+                            if (f.textures.Count > 0)
+                                Gl.glTexCoord2f(textures[f.textures[j] - 1].X, textures[f.textures[j] - 1].Y);
+                            Gl.glVertex3d(points[f.points[j] - 1].X, points[f.points[j] - 1].Y, points[f.points[j] - 1].Z);
                         }
+                        Gl.glEnd();
                     }
+
                 }
                 else throw new Exception("Ошибка в файле. Не заданы грани.");
-                
+
                 Gl.glFlush();
                 AnT.Invalidate();
                 Gl.glDisable(Gl.GL_LIGHTING);
